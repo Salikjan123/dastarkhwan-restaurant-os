@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dastarkhwan - Restaurant POS</title>
+<style>
+*{box-sizing:border-box;font-family:Arial}body{margin:0;background:#fff8ec;color:#222}
+header{background:#8b0000;color:#fff;padding:15px;text-align:center}
+header h1{margin:0;font-size:32px}
+.top{display:flex;gap:10px;padding:12px;flex-wrap:wrap;justify-content:center}
+.top select,.top input{padding:10px;border-radius:8px;border:1px solid #ccc;font-size:16px}
+.menu{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;padding:12px}
+.card{background:#fff;border:1px solid #eee;border-radius:12px;padding:12px;text-align:center}
+.card b{color:#8b0000;font-size:18px}
+.card button{background:#8b0000;color:#fff;border:0;padding:10px;width:100%;border-radius:8px;margin-top:8px;font-size:15px}
+.bill{margin:12px;background:#fff;border-radius:12px;padding:15px;border:2px dashed #8b0000}
+.row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #eee}
+.total{font-size:22px;font-weight:bold;display:flex;justify-content:space-between;margin-top:10px}
+.pay{background:#25D366;color:#fff;border:0;padding:14px;width:100%;border-radius:10px;font-size:18px;margin-top:10px}
+.clear{background:#eee;border:0;padding:10px;width:100%;border-radius:10px;margin-top:8px}
+</style>
+</head>
+<body>
+<header><h1>🍽️ DASTARKHWAN</h1><p>Best Restaurant POS in Pakistan | Fast Billing | QR Order</p></header>
+<div class="top">
+<select id="table"><option>Table 1</option><option>Table 2</option><option>Table 3</option><option>Take Away</option><option>Home Delivery</option></select>
+<input id="cust" placeholder="Customer Name / Phone">
+</div>
+<div class="menu" id="menu"></div>
+<div class="bill">
+<h2>🧾 Bill - <span id="tname">Table 1</span></h2>
+<div id="items"><p>Abhi kuch add nahi hua</p></div>
+<div class="total"><span>Total:</span><span>Rs <span id="total">0</span></span></div>
+<button class="pay" onclick="pay()">✅ Bill Done + WhatsApp Order</button>
+<button class="clear" onclick="clearAll()">🗑️ Bill Clear Karo</button>
+</div>
+<script>
+let items=[{name:"Chicken Karahi",price:1200,emoji:"🍛"},{name:"Chicken Biryani",price:450,emoji:"🍚"},{name:"Malai Boti",price:850,emoji:"🍢"},{name:"Zinger Burger",price:550,emoji:"🍔"},{name:"Shawarma",price:350,emoji:"🌯"},{name:"Fries",price:250,emoji:"🍟"},{name:"Cold Drink",price:120,emoji:"🥤"},{name:"Chai",price:100,emoji:"☕"}];
+let cart=[];let menu=document.getElementById('menu');
+items.forEach((it,i)=>{menu.innerHTML+=`<div class="card"><div style="font-size:40px">${it.emoji}</div><h3>${it.name}</h3><b>Rs ${it.price}</b><button onclick="add(${i})">+ Add Karo</button></div>`});
+function add(i){let f=cart.find(x=>x.name==items[i].name);if(f)f.qty++;else cart.push({...items[i],qty:1});render();}
+function render(){let box=document.getElementById('items');if(cart.length==0){box.innerHTML='<p>Abhi kuch add nahi hua</p>';document.getElementById('total').innerText=0;return;}let h='';let t=0;cart.forEach((c,idx)=>{let s=c.price*c.qty;t+=s;h+=`<div class="row"><span>${c.name} x ${c.qty}</span><span>Rs ${s} <button onclick="del(${idx})">❌</button></span></div>`});box.innerHTML=h;document.getElementById('total').innerText=t;}
+function del(i){cart.splice(i,1);render();}
+function clearAll(){cart=[];render();}
+document.getElementById('table').onchange=function(){document.getElementById('tname').innerText=this.value}
+function pay(){if(cart.length==0){alert('Pehle kuch add karo!');return;}let t=document.getElementById('total').innerText;let name=document.getElementById('cust').value||'Customer';let table=document.getElementById('table').value;let msg=`New Order - ${table} - ${name} - Total Rs ${t}`;alert('Bill Done! Total Rs '+t);window.open('https://wa.me/923000000000?text='+encodeURIComponent(msg));}
+</script>
+</body>
+</html>
